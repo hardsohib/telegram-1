@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Auth</title>
+
+<style>
+:root{
+  --radius:22px;
+  --speed:420ms;
+
+  --bg:#000;
+  --card: rgba(255,255,255,.06);
+  --border: rgba(255,255,255,.14);
+  --text: #eaffff;
+  --muted: rgba(255,255,255,.72);
+
+  --accent: #b9ff1f;
+  --blue: #1aa7ff;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(900px 520px at 15% 80%, rgba(185,255,31,.08), transparent 60%),
+    radial-gradient(1100px 600px at 70% 10%, rgba(26,167,255,.10), transparent 55%),
+    var(--bg);
+}
+
+/* CARD */
+.card{
+  width:min(420px,92vw);
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:0 28px 60px rgba(0,0,0,.60);
+  padding:26px;
+  animation:enter .6s ease;
+}
+@keyframes enter{
+  from{opacity:0; transform:translateY(18px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  gap:6px;
+  background:rgba(255,255,255,.06);
+  padding:6px;
+  border-radius:999px;
+  margin-bottom:20px;
+  border:1px solid var(--border);
+}
+.tab{
+  flex:1;
+  padding:14px 0;
+  border-radius:999px;
+  border:0;
+  cursor:pointer;
+  font-weight:1000;
+  font-size:16px;
+  color:var(--muted);
+  background:none;
+  transition:.25s;
+}
+.tab.active{
+  color:#061019;
+  background:linear-gradient(135deg,var(--blue),var(--accent));
+}
+
+/* PAGES */
+.page{ display:none; animation:fade .35s ease; }
+.page.active{ display:block; }
+@keyframes fade{
+  from{opacity:0; transform:scale(.97)}
+  to{opacity:1; transform:scale(1)}
+}
+
+.field{margin-bottom:14px}
+label{
+  font-size:13px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:6px;
+}
+
+.input{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+}
+.prefix{
+  font-weight:1000;
+  padding:6px 10px;
+  border-radius:10px;
+  background:rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+input{
+  width:100%;
+  border:0;
+  outline:none;
+  background:none;
+  color:var(--text);
+  font-size:15px;
+}
+
+.btn{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border-radius:16px;
+  border:0;
+  cursor:pointer;
+  font-weight:1000;
+  font-size:16px;
+  color:#061019;
+  background:linear-gradient(135deg,var(--blue),var(--accent));
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 30px rgba(0,0,0,.45); }
+
+.linkRow{
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+.link{
+  cursor:pointer;
+  user-select:none;
+}
+.link:hover{color:var(--accent)}
+
+.help{
+  margin:10px 0 0;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.35;
+}
+.note{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:var(--muted);
+  font-size:13px;
+}
+
+.topNote{
+  margin-bottom:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(185,255,31,.22);
+  background: rgba(185,255,31,.06);
+  color: rgba(255,255,255,.86);
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+  <div class="card">
+
+    <div class="topNote">
+      Demo auth (localStorage). Later you’ll connect backend + Telegram bot.
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabsBar">
+      <button class="tab active" id="loginTab" type="button">LOGIN</button>
+      <button class="tab" id="registerTab" type="button">REGISTER</button>
+    </div>
+
+    <!-- LOGIN -->
+    <section class="page active" id="loginPage">
+      <form id="loginForm">
+        <div class="field">
+          <label>Phone number</label>
+          <div class="input">
+            <div class="prefix">+998</div>
+            <input id="loginPhone" maxlength="9" inputmode="numeric" placeholder="901234567" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input">
+            <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" />
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Login</button>
+
+        <div class="linkRow">
+          <span class="link" id="forgotLink">Forgot password?</span>
+          <span class="link" id="goRegisterLink">Create account</span>
+        </div>
+
+        <div class="note" id="loginNote" style="display:none;"></div>
+      </form>
+    </section>
+
+    <!-- REGISTER -->
+    <section class="page" id="registerPage">
+      <form id="registerForm">
+        <div class="field">
+          <label>Full name</label>
+          <div class="input">
+            <input id="regName" placeholder="Your name" autocomplete="name" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Phone number</label>
+          <div class="input">
+            <div class="prefix">+998</div>
+            <input id="regPhone" maxlength="9" inputmode="numeric" placeholder="901234567" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input">
+            <input id="regPass" type="password" placeholder="Create password" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Confirm password</label>
+          <div class="input">
+            <input id="regPass2" type="password" placeholder="Repeat password" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Create account</button>
+
+        <div class="linkRow">
+          <span class="link" id="goLoginLink">Back to login</span>
+          <span class="link" id="forgotLink2">Forgot password?</span>
+        </div>
+
+        <div class="note" id="regNote" style="display:none;"></div>
+      </form>
+    </section>
+
+    <!-- FORGOT -->
+    <section class="page" id="forgotPage">
+      <form id="forgotRequestForm">
+        <div class="field">
+          <label>Phone number</label>
+          <div class="input">
+            <div class="prefix">+998</div>
+            <input id="fpPhone" maxlength="9" inputmode="numeric" placeholder="901234567" autocomplete="tel" />
+          </div>
+        </div>
+
+        <p class="help">
+          Later we will send verification code in Telegram (via your bot).
+        </p>
+
+        <button class="btn" type="submit" id="sendCodeBtn">Send code</button>
+
+        <div class="note" id="sendCodeNote" style="display:none;"></div>
+
+        <div class="linkRow">
+          <span class="link" id="backToLogin1">Back to login</span>
+          <span class="link" id="backToRegister1">Go to register</span>
+        </div>
+      </form>
+
+      <form id="forgotResetForm" style="display:none; margin-top:14px;">
+        <div class="field">
+          <label>Verification code</label>
+          <div class="input">
+            <input id="fpCode" maxlength="6" inputmode="numeric" placeholder="123456" autocomplete="one-time-code" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>New password</label>
+          <div class="input">
+            <input id="fpNewPass" type="password" placeholder="New password" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Confirm new password</label>
+          <div class="input">
+            <input id="fpNewPass2" type="password" placeholder="Repeat new password" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <button class="btn" type="submit" id="resetBtn">Reset password</button>
+
+        <div class="note" id="resetNote" style="display:none;"></div>
+
+        <div class="linkRow">
+          <span class="link" id="backToLogin2">Back to login</span>
+          <span class="link" id="resendCode">Resend code</span>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+<script>
+/* ===== Helpers ===== */
+const $ = (id)=>document.getElementById(id);
+const show = (el)=> el.style.display = "";
+const hide = (el)=> el.style.display = "none";
+
+function digitsOnly(el){
+  el.addEventListener("input", ()=> el.value = el.value.replace(/\D/g,''));
+}
+
+function setActiveTab(tab){
+  $("loginTab").classList.toggle("active", tab==="login");
+  $("registerTab").classList.toggle("active", tab==="register");
+}
+
+function setPage(page){
+  $("loginPage").classList.toggle("active", page==="login");
+  $("registerPage").classList.toggle("active", page==="register");
+  $("forgotPage").classList.toggle("active", page==="forgot");
+  $("tabsBar").style.display = (page==="forgot") ? "none" : "flex";
+  if(page==="login") setActiveTab("login");
+  if(page==="register") setActiveTab("register");
+}
+
+["loginPhone","regPhone","fpPhone","fpCode"].forEach(id=> digitsOnly($(id)));
+
+$("loginTab").onclick = ()=> setPage("login");
+$("registerTab").onclick = ()=> setPage("register");
+
+$("forgotLink").onclick  = ()=> setPage("forgot");
+$("forgotLink2").onclick = ()=> setPage("forgot");
+$("goRegisterLink").onclick = ()=> setPage("register");
+$("goLoginLink").onclick = ()=> setPage("login");
+$("backToLogin1").onclick = ()=> setPage("login");
+$("backToLogin2").onclick = ()=> setPage("login");
+$("backToRegister1").onclick = ()=> setPage("register");
+
+/* ===== Demo DB (localStorage) ===== */
+function loadUsers(){
+  try { return JSON.parse(localStorage.getItem("demo_users") || "{}"); }
+  catch { return {}; }
+}
+function saveUsers(obj){
+  localStorage.setItem("demo_users", JSON.stringify(obj));
+}
+function note(el, msg){
+  el.textContent = msg;
+  show(el);
+}
+function clearNote(el){
+  hide(el);
+  el.textContent = "";
+}
+
+function loginSuccess(phone, user){
+  localStorage.setItem("logged_in", "1");
+  localStorage.setItem("user_phone", phone);
+  localStorage.setItem("user_name", user?.name || "User");
+  // keep existing user_email if set from services settings
+  window.location.href = "services.html";
+}
+
+/* ===== Login ===== */
+$("loginForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  clearNote($("loginNote"));
+
+  const phone = $("loginPhone").value.trim();
+  const pass = $("loginPass").value.trim();
+
+  if(phone.length !== 9) return note($("loginNote"), "Enter 9 digits after +998.");
+  if(pass.length < 4) return note($("loginNote"), "Enter password.");
+
+  const users = loadUsers();
+  const user = users[phone];
+
+  if(!user) return note($("loginNote"), "Account not found. Please register.");
+  if(user.pass !== pass) return note($("loginNote"), "Wrong password.");
+
+  loginSuccess(phone, user);
+});
+
+/* ===== Register ===== */
+$("registerForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  clearNote($("regNote"));
+
+  const name = $("regName").value.trim();
+  const phone = $("regPhone").value.trim();
+  const p1 = $("regPass").value.trim();
+  const p2 = $("regPass2").value.trim();
+
+  if(!name) return note($("regNote"), "Enter your name.");
+  if(phone.length !== 9) return note($("regNote"), "Enter 9 digits after +998.");
+  if(p1.length < 6) return note($("regNote"), "Password must be at least 6 characters.");
+  if(p1 !== p2) return note($("regNote"), "Passwords do not match.");
+
+  const users = loadUsers();
+  if(users[phone]) return note($("regNote"), "This phone is already registered. Login instead.");
+
+  users[phone] = { name, pass: p1 };
+  saveUsers(users);
+
+  note($("regNote"), "✅ Account created. Logging you in...");
+  setTimeout(()=> loginSuccess(phone, users[phone]), 500);
+});
+
+/* ===== Forgot Password (demo) ===== */
+const sendCodeNote = $("sendCodeNote");
+const resetNote = $("resetNote");
+const resetForm = $("forgotResetForm");
+
+function showSendNote(text){ sendCodeNote.textContent = text; show(sendCodeNote); }
+function showResetNote(text){ resetNote.textContent = text; show(resetNote); }
+
+function startResetStep(){
+  show(resetForm);
+  resetForm.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+$("forgotRequestForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  hide(sendCodeNote);
+
+  const phone = $("fpPhone").value.trim();
+  if(phone.length !== 9){
+    showSendNote("Enter 9 digits after +998.");
+    return;
+  }
+
+  const users = loadUsers();
+  if(!users[phone]){
+    showSendNote("Account not found. Please register.");
+    return;
+  }
+
+  const demoCode = String(Math.floor(100000 + Math.random()*900000));
+  localStorage.setItem("demo_fp_code", demoCode);
+  localStorage.setItem("demo_fp_phone", phone);
+
+  showSendNote("Demo: code was 'sent' in Telegram (saved locally).");
+  startResetStep();
+});
+
+$("resendCode").onclick=()=> $("sendCodeBtn").click();
+
+$("forgotResetForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  hide(resetNote);
+
+  const phone = localStorage.getItem("demo_fp_phone") || $("fpPhone").value.trim();
+  const savedCode = localStorage.getItem("demo_fp_code");
+
+  const code = $("fpCode").value.trim();
+  const np1 = $("fpNewPass").value.trim();
+  const np2 = $("fpNewPass2").value.trim();
+
+  if(!phone || phone.length !== 9) return showResetNote("Phone missing. Go back and enter phone number.");
+  if(code.length !== 6) return showResetNote("Enter 6-digit code.");
+  if(savedCode && code !== savedCode) return showResetNote("Wrong code. Try again or resend.");
+  if(!np1 || np1.length < 6) return showResetNote("Password must be at least 6 characters.");
+  if(np1 !== np2) return showResetNote("Passwords do not match.");
+
+  const users = loadUsers();
+  if(!users[phone]) return showResetNote("Account not found. Register first.");
+
+  users[phone].pass = np1;
+  saveUsers(users);
+
+  showResetNote("✅ Password reset success. You can login now.");
+  setTimeout(()=> setPage("login"), 900);
+});
+
+/* Optional: if already logged in, skip auth */
+if (localStorage.getItem("logged_in") === "1") {
+  window.location.replace("./index.html");
+
+}
+</script>
+</body>
+</html>
