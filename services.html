@@ -872,7 +872,11 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    <script>
+    <script>fetch(`${API_BASE}/api/health`)
+  .then(r => r.json())
+  .then(d => console.log("API CONNECTED:", d))
+  .catch(e => console.log("API ERROR:", e));
+
 const API_BASE = "https://beckend-bot-1.onrender.com"; // later: https://api.yourdomain.com
 
     // ==============================
