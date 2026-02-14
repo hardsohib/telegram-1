@@ -323,6 +323,13 @@ input{
 
 <script>
   <script>
+    fetch(`${API_BASE}/api/health`)
+  .then(res => res.text())
+  .then(data => {
+    console.log("RAW RESPONSE:");
+    console.log(data);
+  });
+
 const API_BASE = "https://beckend-bot-1.onrender.com"; // later: https://api.yourdomain.com
 
 /* ===== Helpers ===== */
@@ -505,5 +512,6 @@ if (localStorage.getItem("logged_in") === "1") {
 </script>
 </body>
 </html>
+
 
 
